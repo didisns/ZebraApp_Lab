@@ -49,9 +49,10 @@ if flagSPG
     caxis(app.spectraWide, [app.SPGlowDB app.SPGhighDB]);
     app.spectraWide.YDir = 'normal';
     app.spectraWide.YLabel.String = 'Frequency (Hz)';
-end
-
-if flagBP
+    app.lowerDB.Enable = 1;
+    app.upperDB.Enable = 1;
+    
+elseif flagBP
     hold(app.spectraWide, 'on');
     % collect the BP data to plot
     flagBP1 = app.bpCheck1.Value;
@@ -147,9 +148,11 @@ if flagBP
     end
     app.spectraWide.YLabel.String = 'Power';
     hold(app.spectraWide, 'off')
-end
     
-if flagBPpower
+    app.lowerDB.Enable = 0;
+    app.upperDB.Enable = 0;
+    
+elseif flagBPpower
     if flagMd
         tmp(1:app.spgl) = app.meanSpgPlot(app.currentCh,1:app.spgl);
     else
@@ -173,9 +176,10 @@ if flagBPpower
     if flagLog, app.spectraWide.YScale = 'log';
     end
     app.spectraWide.YLabel.String = 'Power';
-end
+    app.lowerDB.Enable = 0;
+    app.upperDB.Enable = 0;
 
-if flagEI
+elseif flagEI
     if flagMd
         tmp(1:app.spgl) = app.meanEIrat(app.currentCh,1:app.spgl);
     else
@@ -195,4 +199,6 @@ if flagEI
     if flagLog, app.spectraWide.YScale = 'log';
     end
     %set(gca,'yscale','log');
+    app.lowerDB.Enable = 0;
+    app.upperDB.Enable = 0;
 end
