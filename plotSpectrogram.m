@@ -55,84 +55,104 @@ if flagSPG
 elseif flagBP
     hold(app.spectraWide, 'on');
     % collect the BP data to plot
-    flagBP1 = app.bpCheck1.Value;
-    flagBP2 = app.bpCheck2.Value;
-    flagBP3 = app.bpCheck3.Value;
-    flagHP = app.hpCheck.Value;
+%     flagBP1 = app.bpCheck1.Value;
+%     flagBP2 = app.bpCheck2.Value;
+%     flagBP3 = app.bpCheck3.Value;
+%     flagHP = app.hpCheck.Value;
     
-    % BP power data are plotted one at the time 
-    if flagBP1
-        if flagMd
-            % plot average of BP power
-%             tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
-            tmpX(1:app.BPpowerL(2)) = app.BPpower (1,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));
-            tmpY(1:1:app.BPpowerL(2)) = ...
-                squeeze(mean(app.BPpower (2,2,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(2)),4));
-            plot(app.spectraWide, tmpX,tmpY,'Color','c','LineWidth',1);
-        end
-        if flagTr
-            % plot single trial
-            tmpX(1:app.BPpowerL(2)) = ...
-                app.BPpower (1,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));  
-            tmpY(1:1:app.BPpowerL(2)) = ...
-                app.BPpower (2,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));
-            plot(app.spectraWide, tmpX,tmpY,'Color','c','LineWidth',1);
-        end
-    end
-    if flagBP2
-        if flagMd
-            % plot average of BP power
-    %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
-            tmpX(1:app.BPpowerL(3)) = app.BPpower (1,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));
-            tmpY(1:1:app.BPpowerL(3)) = ...
-                squeeze(mean(app.BPpower (2,3,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(3)),4));
-            plot(app.spectraWide, tmpX,tmpY,'Color','r','LineWidth',1);
-        end
-        if flagTr
-            % plot single trial
-            tmpX(1:app.BPpowerL(3)) = ...
-                app.BPpower (1,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));  
-            tmpY(1:1:app.BPpowerL(3)) = ...
-                app.BPpower (2,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));
-            plot(app.spectraWide, tmpX,tmpY,'Color','r','LineWidth',1);
+    % BP power data are plotted one at the time
+    
+    % 2019/05/26 Gab, loop over all the BPs
+    for selBP = 1:size(app.frequencyBand,1)
+        if app.BP_4_plot(selBP) % if the current BP is selected
+            if flagMd
+                % plot average of BP power
+                tmpX = squeeze(app.BPpower(selBP).time);
+                tmpY = squeeze(mean( app.BPpower(selBP).power(app.currentCh,flagSkip1st+1:end,:), 2));    
+                plot(app.spectraWide, tmpX,tmpY,'Color',app.BP_color(selBP,:),'LineWidth',2);
+            end
+            if flagTr
+                % plot single trial
+                tmpX = squeeze(app.BPpower(selBP).time);
+                tmpY = squeeze(app.BPpower(selBP).power(app.currentCh,app.currentTrial,:));
+                plot(app.spectraWide, tmpX,tmpY,'Color',app.BP_color(selBP,:),'LineWidth',0.5);
+            end
         end
     end
-    if flagBP3
-        if flagMd
-            % plot average of BP power
-    %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
-            tmpX(1:app.BPpowerL(4)) = app.BPpower (1,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));
-            tmpY(1:1:app.BPpowerL(4)) = ...
-                squeeze(mean(app.BPpower (2,4,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(4)),4));
-            plot(app.spectraWide, tmpX,tmpY,'Color','g','LineWidth',1);
-        end
-        if flagTr
-            % plot single trial
-            tmpX(1:app.BPpowerL(4)) = ...
-                app.BPpower (1,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));  
-            tmpY(1:1:app.BPpowerL(4)) = ...
-                app.BPpower (2,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));
-            plot(app.spectraWide, tmpX,tmpY,'Color','g','LineWidth',1);
-        end
-    end
-    if flagHP
-        if flagMd
-            % plot average of BP power
-    %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
-            tmpX(1:app.BPpowerL(5)) = app.BPpower (1,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));
-            tmpY(1:1:app.BPpowerL(5)) = ...
-                squeeze(mean(app.BPpower (2,5,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(5)),4));
-            plot(app.spectraWide, tmpX,tmpY,'Color','blue','LineWidth',1);
-        end
-        if flagTr
-            % plot single trial
-            tmpX(1:app.BPpowerL(5)) = ...
-                app.BPpower (1,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));  
-            tmpY(1:1:app.BPpowerL(5)) = ...
-                app.BPpower (2,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));
-            plot(app.spectraWide, tmpX,tmpY,'Color','blue','LineWidth',1);
-        end
-    end
+    
+%     
+%     if flagBP1
+%         if flagMd
+%             % plot average of BP power
+% %             tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
+%             tmpX(1:app.BPpowerL(2)) = app.BPpower (1,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));
+%             tmpY(1:1:app.BPpowerL(2)) = ...
+%                 squeeze(mean(app.BPpower (2,2,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(2)),4));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','c','LineWidth',1);
+%         end
+%         if flagTr
+%             % plot single trial
+%             tmpX(1:app.BPpowerL(2)) = ...
+%                 app.BPpower (1,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));  
+%             tmpY(1:1:app.BPpowerL(2)) = ...
+%                 app.BPpower (2,2,app.currentCh,app.currentTrial,1:app.BPpowerL(2));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','c','LineWidth',1);
+%         end
+%     end
+%     if flagBP2
+%         if flagMd
+%             % plot average of BP power
+%     %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
+%             tmpX(1:app.BPpowerL(3)) = app.BPpower (1,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));
+%             tmpY(1:1:app.BPpowerL(3)) = ...
+%                 squeeze(mean(app.BPpower (2,3,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(3)),4));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','r','LineWidth',1);
+%         end
+%         if flagTr
+%             % plot single trial
+%             tmpX(1:app.BPpowerL(3)) = ...
+%                 app.BPpower (1,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));  
+%             tmpY(1:1:app.BPpowerL(3)) = ...
+%                 app.BPpower (2,3,app.currentCh,app.currentTrial,1:app.BPpowerL(3));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','r','LineWidth',1);
+%         end
+%     end
+%     if flagBP3
+%         if flagMd
+%             % plot average of BP power
+%     %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
+%             tmpX(1:app.BPpowerL(4)) = app.BPpower (1,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));
+%             tmpY(1:1:app.BPpowerL(4)) = ...
+%                 squeeze(mean(app.BPpower (2,4,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(4)),4));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','g','LineWidth',1);
+%         end
+%         if flagTr
+%             % plot single trial
+%             tmpX(1:app.BPpowerL(4)) = ...
+%                 app.BPpower (1,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));  
+%             tmpY(1:1:app.BPpowerL(4)) = ...
+%                 app.BPpower (2,4,app.currentCh,app.currentTrial,1:app.BPpowerL(4));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','g','LineWidth',1);
+%         end
+%     end
+%     if flagHP
+%         if flagMd
+%             % plot average of BP power
+%     %        tmp(1:handles.spgl) = handles.meanSpgPlot(handles.currentCh,1:handles.spgl);
+%             tmpX(1:app.BPpowerL(5)) = app.BPpower (1,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));
+%             tmpY(1:1:app.BPpowerL(5)) = ...
+%                 squeeze(mean(app.BPpower (2,5,app.currentCh,flagSkip1st+1:end,1:app.BPpowerL(5)),4));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','blue','LineWidth',1);
+%         end
+%         if flagTr
+%             % plot single trial
+%             tmpX(1:app.BPpowerL(5)) = ...
+%                 app.BPpower (1,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));  
+%             tmpY(1:1:app.BPpowerL(5)) = ...
+%                 app.BPpower (2,5,app.currentCh,app.currentTrial,1:app.BPpowerL(5));
+%             plot(app.spectraWide, tmpX,tmpY,'Color','blue','LineWidth',1);
+%         end
+%     end
 %         if flagFlt
 %             % adapt the filter frame and order to the length of the data
 %             frame = int32(handles.spgl / 64) * 2 + 1;   % frame must be odd. Thats is why *2+1 !

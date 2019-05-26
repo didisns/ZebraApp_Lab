@@ -162,13 +162,13 @@ for i=1:app.nCh
                     bltemp = [];
                     rstemp = [];
                     
-                    bltemp = app.bandPassed_LFP(app.BP4power+1,i,k,blFromNow(ii):blToNow(ii));
+                    bltemp = app.bandPassed_LFP(app.BP4power,i,k,blFromNow(ii):blToNow(ii));
                     %GAB 2019/02/24: add logarithm
                     bl = 10*log10(squeeze(rms (bltemp)));  % do we really need to squeeze?
                  
                     %bltemp = handles.EIrat (i,k,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
                     %bl = squeeze(mean (bltemp,3));
-                    rstemp = app.bandPassed_LFP(app.BP4power+1,i,k,respFromNow(ii):respToNow(ii));
+                    rstemp = app.bandPassed_LFP(app.BP4power,i,k,respFromNow(ii):respToNow(ii));
                     %GAB 2019/02/24: add logarithm
                     rs = 10*log10(squeeze(rms (rstemp)));
                     
@@ -176,7 +176,7 @@ for i=1:app.nCh
                     %rs = squeeze(mean (rstemp,3));
                     FDresp = rs-bl;
                     % extract the band passed data
-                    tempPW = app.bandPassed_LFP(app.BP4power+1,i,k,tFromPW(ii):tToPW(ii));
+                    tempPW = app.bandPassed_LFP(app.BP4power,i,k,tFromPW(ii):tToPW(ii));
                     % multiply it by the fitted template. NO! we should
                     % pass it through the template but not the fitted
                     % template, otherwise the correlation between power and
@@ -276,7 +276,7 @@ function computeMeanData (app)
         tmp (1:app.nTrials-trialBegins+1,1:app.dtaLen) = app.workLFP(i,trialBegins:app.nTrials,1:app.dtaLen);
         app.meanLFP (i,1:app.dtaLen) = mean (tmp,1);
         % compute mean of band-passed data
-        for k=1:5
+        for k=1:size(app.frequencyBand,1)
             if app.BPcomputed(k)
                 tmp (1:app.nTrials-trialBegins+1,1:app.dtaLen) = app.bandPassed_LFP(k,i,trialBegins:app.nTrials,1:app.dtaLen);
                 app.meanBP (k,i,1:app.dtaLen) = mean (tmp,1);
