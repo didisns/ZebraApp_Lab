@@ -42,7 +42,7 @@ for i = 1:app.nCh
                 if leakageFlag
                     % first: subtract the LP filtered data from the workLFP
                     % data. Second: compute its SPG
-                    tmp = squeeze(app.workLFP(i,j,:))-squeeze(app.bandPassed_LFP(6,i,j,:));
+                    tmp = squeeze(app.workLFP(i,j,:))-squeeze(app.LPfiltLeakage(i,j,:));
                     [ps, t, w] = mtspecgramc(tmp,[rollingWin overlap],params);
                     ps = ps';
                     app.spgDeleaked(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
