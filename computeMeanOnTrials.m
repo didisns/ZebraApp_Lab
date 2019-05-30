@@ -10,7 +10,11 @@ disp('Compute mean on trials');
 computeMeanData (app)
 
 skipFlag = get (app.skip1trialCk,'value');
-if skipFlag, trialBegins = 2;
+if skipFlag
+    trialBegins = 2 - app.alreadySkipped; % Gab, 2019/05/29: if the fist trial have been excluded
+                                            % during trial extraction,
+                                            % there's no reason for
+                                            % skipping another one here.
 else
     trialBegins = 1;
 end
@@ -259,10 +263,15 @@ function computeMeanData (app)
     % Compute means of all the data representations on all trials
     % April 25, 2017. A checkbox is added to skip the first trial
     % March 2018. Modified to allow conditional computation of BPed data
+    % 2019/05/29, Gab. mean BandPassed_LFP computation moved to the function "computeBPandNotch"
 
     leakageFlag = app.displayLeakCk.Value;
     skipFlag = app.skip1trialCk.Value;
-    if skipFlag, trialBegins = 2;
+    if skipFlag
+        trialBegins = 2 - app.alreadySkipped; % Gab, 2019/05/29: if the fist trial have been excluded
+                                            % during trial extraction,
+                                            % there's no reason for
+                                            % skipping another one here.
     else
         trialBegins = 1;
     end
@@ -275,13 +284,10 @@ function computeMeanData (app)
         % create temporary matrix for average computation
         tmp (1:app.nTrials-trialBegins+1,1:app.dtaLen) = app.workLFP(i,trialBegins:app.nTrials,1:app.dtaLen);
         app.meanLFP (i,1:app.dtaLen) = mean (tmp,1);
+        
         % compute mean of band-passed data
-        for k=1:size(app.frequencyBand,1)
-            if app.BPcomputed(k)
-                tmp (1:app.nTrials-trialBegins+1,1:app.dtaLen) = app.bandPassed_LFP(k,i,trialBegins:app.nTrials,1:app.dtaLen);
-                app.meanBP (k,i,1:app.dtaLen) = mean (tmp,1);
-            end
-        end
+        % Gab: moved to "computeBPandNotch"
+        
         % compute mean spectrogram
         tmp = [];
         if leakageFlag      %GAB: add plotting of deleaked mean spg.
