@@ -243,7 +243,10 @@ for i=1:app.nCh
                 app.respSummary(app.EPcnt,8) = num2cell(rs);              % 8: Response mean BP1 power
                 app.respSummary(app.EPcnt,9) = num2cell(FDresp);          % 9: Delta BP1 power
 %                handles.respSummary(handles.EPcnt,10) = num2cell(TemplateSPW);    % 10: Delta BP1 power                
-                app.respSummary(app.EPcnt,11) = cellstr(app.expID);   % 11: Patient name-notes        
+                if ~isempty(app.expID)
+                    app.respSummary(app.EPcnt,11) = cellstr(string(app.expID));   % 11: Patient name-notes
+                    % leave column 11 empty
+                end
             end
         end        
     end

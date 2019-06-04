@@ -43,9 +43,18 @@ if flagSPG
     % the spectrogram is represented in decibels
     imagesc(app.spectraWide, app.spgt,app.spgw,10*log10(temp))
     axis(app.spectraWide, [app.tmin app.tmax freqLow freqHigh]);
-%     cmap = fire(size(app.spectraWide.Colormap,1));
-%     %colormap(app.spectraWide,map)
-%     app.spectraWide.Colormap = cmap;
+
+    if app.autoCLimSpg_ck.Value
+        % Gab 2019/06/01 calculate extremes and set colormap limits
+        
+        highDB = max(10*log10(temp),[],'all');
+        app.upperDB.Value = highDB;
+        app.SPGhighDB = highDB;
+        
+        lowDB = min(10*log10(temp),[],'all');
+        app.lowerDB.Value = lowDB;
+        app.SPGlowDB = lowDB;
+    end
     caxis(app.spectraWide, [app.SPGlowDB app.SPGhighDB]);
     app.spectraWide.YDir = 'normal';
     app.spectraWide.YLabel.String = 'Frequency (Hz)';
