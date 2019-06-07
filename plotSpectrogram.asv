@@ -28,15 +28,15 @@ app.spectraWide.YScale = 'linear';
 if flagSPG
     if flagMd
         if app.deleakedFlag && flagLeak
-            temp = squeeze(app.meanSpgDeleaked(app.currentCh,1:app.freqN,1:app.spgl));
+            temp = app.meanSpgDeleaked(app.currentCh,1:app.freqN,1:app.spgl);
         else
-            temp = squeeze(app.meanSpg(app.currentCh,1:app.freqN,1:app.spgl));    
+            temp = app.meanSpg(app.currentCh,1:app.freqN,1:app.spgl);    
         end
     else    
         if app.deleakedFlag && flagLeak
             temp = squeeze(app.spgDeleaked(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl));
         else
-            temp = squeeze(app.spg(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl));
+            temp = app.spg(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl);
         end
     end
     % the spectrogram is represented in decibels
@@ -182,12 +182,12 @@ elseif flagBP
     
 elseif flagBPpower
     if flagMd
-        tmp = squeeze(app.meanSpgPlot(app.currentCh,1:app.spgl));
+        tmp = app.meanSpgPlot(app.currentCh,1:app.spgl);
     else
         if (app.deleakedFlag && flagLeak)
-            tmp = squeeze(app.spgPlotDeleaked(app.currentCh,app.currentTrial,1:app.spgl));
+            tmp = app.spgPlotDeleaked(app.currentCh,app.currentTrial,1:app.spgl);
         else
-            tmp = squeeze(app.spgPlot(app.currentCh,app.currentTrial,1:app.spgl));
+            tmp = app.spgPlot(app.currentCh,app.currentTrial,1:app.spgl);
         end
         if flagFlt
             % adapt the filter frame and order to the length of the data
@@ -209,9 +209,9 @@ elseif flagBPpower
 
 elseif flagEI
     if flagMd
-        tmp = squeeze(app.meanEIrat(app.currentCh,1:app.spgl));
+        tmp = app.meanEIrat(app.currentCh,1:app.spgl);
     else
-        tmp = squeeze(app.EIrat(app.currentCh,app.currentTrial,1:app.spgl));
+        tmp = app.EIrat(app.currentCh,app.currentTrial,1:app.spgl);
         if flagFlt
             % adapt the filter frame and order to the length of the data
             frame = int32(app.spgl / 64) * 2 + 1;   % frame must be odd. Thats is why *2+1 !
