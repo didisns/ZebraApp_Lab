@@ -196,13 +196,13 @@ for i=1:app.nCh
                     app.respSummary(app.EPcnt,3) = num2cell(k);               % 3: trial
                     app.respSummary(app.EPcnt,4) = num2cell(ii);              % 4: repeat
 
-                    app.respSummary(app.EPcnt,5) = num2cell(localEPamp);      % 5: Peak response
-                    app.respSummary(app.EPcnt,6) = num2cell(0);               % 6: time to peak
-                    app.respSummary(app.EPcnt,7) = num2cell(bl);              % 7: Baseline mean BP1 power
-                    app.respSummary(app.EPcnt,8) = num2cell(rs);              % 8: Response mean BP1 power
-                    app.respSummary(app.EPcnt,9) = num2cell(FDresp);          % 9: Delta BP1 power
-                    app.respSummary(app.EPcnt,10) = num2cell(templateSPW);    % 10: Delta BP1 power                
-                    app.respSummary(app.EPcnt,11) = cellstr(app.expID);   % 11: Patient name-notes        
+                    app.respSummary(app.EPcnt,5)  = num2cell(localEPamp);     % 5: Peak response
+                    app.respSummary(app.EPcnt,6)  = num2cell(0);              % 6: time to peak
+                    app.respSummary(app.EPcnt,7)  = num2cell(bl);             % 7: Baseline mean BP1 power
+                    app.respSummary(app.EPcnt,8)  = num2cell(rs);             % 8: Response mean BP1 power
+                    app.respSummary(app.EPcnt,9)  = num2cell(FDresp);         % 9: Delta BP1 power
+                    app.respSummary(app.EPcnt,10) = num2cell(templateSPW);   % 10: Delta BP1 power                
+                    app.respSummary(app.EPcnt,11) = cellstr(app.expID);      % 11: Patient name-notes        
                 end
             end    
             % compute metrics of the mean responses for each stim repeat
