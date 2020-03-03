@@ -127,7 +127,7 @@ for i=1:app.nCh
             
             % align the template to baseline=0
             blDelta = blTo - templFromI;    % number of point in baseline
-            offset = mean(template(1:blDelta));     % OK
+            offset = median(template(1:blDelta));     % OK
             template = template - offset;
             templateConv = templateConv - offset;
             % compute the amplitude of the template.
@@ -151,7 +151,7 @@ for i=1:app.nCh
                     % first extract the LFP segment to fit with the template
                     segment(1:templateLen) = app.workLFP(i,k,tFrom(ii):tTo(ii));
                     % Offset the segment to align the baseline to 0
-                    offset = mean(segment(1:blDelta));
+                    offset = median(segment(1:blDelta));
                     segment = segment - offset;
                     %handles.segment(i,k,ii,:) = segment; %GAB&ENR 2018/10/03
                     %X = [ones(length(segment),1) segment];
@@ -210,7 +210,7 @@ for i=1:app.nCh
                 bltemp = [];
                 rstemp = [];
                 bltemp = app.meanLFP (i,blFrom + halfSweep * (ii-1):blTo + halfSweep * (ii-1));
-                bl = mean (bltemp,2);
+                bl = median (bltemp,2);
                 % the baseline must be subtracted before computing the
                 % absolute value
                 rstemp = abs(app.meanLFP (i,respFrom + halfSweep * (ii-1):respTo + halfSweep * (ii-1)) - bl);
@@ -225,10 +225,10 @@ for i=1:app.nCh
                 bltemp = [];
                 rstemp = [];
                 bltemp = app.meanEIrat (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
-                bl = mean (bltemp,2);
+                bl = median (bltemp,2);
 
                 rstemp = app.meanEIrat (i,rsFromSPG + halfSweepSPG*(ii-1):rsToSPG + halfSweepSPG*(ii-1));
-                rs = mean (rstemp,2);
+                rs = median (rstemp,2);
                 FDresp = rs-bl;
 
                 app.EPcnt = app.EPcnt + 1;
