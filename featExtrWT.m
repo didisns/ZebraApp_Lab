@@ -1,4 +1,4 @@
-function outfeatures = featExtrWT(inMat,par)
+function [outfeatures] = featExtrWT(inMat,par)
 % Wavelet transform to extract features.
 % This function selects significant features to describe each row of the
 % input matrix. The features derive from the coefficients obtained by the
@@ -16,7 +16,12 @@ function outfeatures = featExtrWT(inMat,par)
 % clustering expressed in a fraction
 % OUTPUTS:
 % outfeatures: matrix that contains all the coefficients computed with the
-% dWT that resulted to be relevant after the dimensionality reduction.
+% dWT that resulted to be relevant after the dimensionality reduction. The
+% order of columns reflects ascending sorting of the Lilliefors'
+% statistical value, meaning that the first column is the less
+% statistically different for the test and the last column is the most
+% statistically different value according to the test (thereby it is the
+% most significant descriptive features for spike sorting purpose).
 
 [nrow,ncol] = size(inMat);
 par.max = ceil(par.max * ncol);
@@ -97,10 +102,9 @@ end
 featColLillie = iL(end - featNumLillie + 1:end); 
 
 % Creation of the input matrix for the clustering: 
-% featCol contains the indeces of coeff of interest but they are
+% featColLillie contains the indeces of coeff of interest but they are
 % ordered according to the ascendent sorting of ks values
 outfeatures = featMat(:,featColLillie);
-
 %% this is their code that i don't understand completely: 
 % if numel(all_above1) >=2
 %     aux2 = diff(all_above1);
@@ -193,4 +197,5 @@ outfeatures = featMat(:,featColLillie);
 % % featCol contains the indeces of coeff of interest but they are
 % % ordered according to the ascendent sorting of ks values
 % outputKS = featMat(:,featCol);
+% idx3featKS = iKS(end-3:end);
 end
