@@ -134,8 +134,6 @@ outfeatures = featMat(:,featColLillie);
 %     [c,~] = wavedec(inMat(i,:),par.lvl,par.wtType);
 %     featMat(i,:) = c(1:ncol); 
 % end
-
-
 % % Kolmogorov-Smirnov test
 % ks = zeros(1,ncol); % vector that will contain the values of the KS for each col
 % thr_dist = (std(featMat))*3;
