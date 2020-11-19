@@ -35,8 +35,8 @@ sweepDuration = app.sp * (app.dtaLen-1);    % duration of each trial
 %             if flagDouble, handles.ntemp = 2;
 %             end
 
-halfSweep = int32 (app.dtaLen/2);       % this can be easily generalize to multiple stim per sweep
-halfSweepSPG = int32(app.spgl/2);
+halfSweep = int32 (floor(app.dtaLen/2));       % this can be easily generalize to multiple stim per sweep
+halfSweepSPG = int32(floor(app.spgl/2));
 
 % window for template computation and fit
 templFromI = int32(app.templateFrom.Value/app.sp)+1 - app.timeOffset_i; %GAB 2019/02/24: offset added
@@ -104,6 +104,7 @@ for i=1:app.nCh
             app.ntemp = 1;
             if flagDouble, app.ntemp = 2;
             end
+            
             for ii=1:app.ntemp
                 tFrom(ii) = templFromI + halfSweep * (ii-1);
                 tTo(ii) = templToI + halfSweep * (ii-1);

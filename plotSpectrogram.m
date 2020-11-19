@@ -2,7 +2,16 @@ function plotSpectrogram (app)
 % This function performs the plot in the SPG window.
 % Depending on the selected radio button different data are plotted down
 % there.
+% <<<<<<< Updated upstream
 
+% =======
+% <<<<<<< Updated upstream
+% 
+% =======
+% % 
+% tmp = [];
+% >>>>>>> Stashed changes
+% >>>>>>> Stashed changes
 %axes(handles.spectraWide)      % select the SPG axes
 cla(app.spectraWide)
 % load in all necessary parameters from the handles structure
