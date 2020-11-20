@@ -112,7 +112,7 @@ for fj=1:freqNum
     end
 end   
 
-function [wnd ovl] = setSPGwindow (app, deltaT)
+function [wnd, ovl] = setSPGwindow (app, deltaT)
 % This function reads (from GUI) or generates the values of window size and
 % overlap to be used for the spectrogram computation.
 % The automatic computation uses the width of the data to adapt the width
