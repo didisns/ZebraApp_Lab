@@ -61,31 +61,35 @@ for i = 1:app.nCh
                 end
             end
         end
+        if app.computeEIrat.Value
         % compute the short time E/I index
         % First: create the array containing the indexes of the spectral density in the interval 20-50 Hz
         [segmentI, segmentF, freqCnt] = findSPGelements (w, app.freqN, 20, 50);
         % Second: loop on all time point of the spg to compute the linear
         % fit to the spectra segment
-        for ti=1:app.spgl
-            spectraSegment = app.spg(i,j,segmentI(1):segmentI(freqCnt),ti);
-            % compute now the linear fit to the log log segment
-            segmentF = squeeze(segmentF);   % remove the singleton dimensions
-            spectraSegment = squeeze(spectraSegment);
-            % compute slope and offset of the fit
-            %X = [ones(length(segmentF),1) segmentF'];
-            X = [ones(length(segmentF),1) log(segmentF)'];
-            fit = X\log(spectraSegment);
-            app.EIrat (i,j,ti) = fit(2);
-            % the linear regression operators '\' needs row vectors.
-        end    
+            for ti=1:app.spgl
+                spectraSegment = app.spg(i,j,segmentI(1):segmentI(freqCnt),ti);
+                % compute now the linear fit to the log log segment
+                segmentF = squeeze(segmentF);   % remove the singleton dimensions
+                spectraSegment = squeeze(spectraSegment);
+                % compute slope and offset of the fit
+                %X = [ones(length(segmentF),1) segmentF'];
+                X = [ones(length(segmentF),1) log(segmentF)'];
+                fit = X\log(spectraSegment);
+                app.EIrat (i,j,ti) = fit(2);
+                % the linear regression operators '\' needs row vectors.
+            end
+        end
         % compute the integral of the SPG in 'gamma' band
-        PWfrom = app.envSPGfrom.Value;
-        PWto = app.envSPGto.Value;        
-        [segmentI, segmentF, freqCnt] = findSPGelements (w, app.freqN, PWfrom, PWto);
-        app.spgPlot(i,j,1:app.spgl) = sum(app.spg(i,j,segmentI(1):segmentI(freqCnt),1:app.spgl));
-        if leakageFlag
-            app.spgPlotDeleaked(i,j,1:app.spgl) = sum(app.spgDeleaked(i,j,segmentI(1):segmentI(freqCnt),1:app.spgl));            
-        end    
+        if app.computeEnvelope.Value
+            PWfrom = app.envSPGfrom.Value;
+            PWto = app.envSPGto.Value;        
+            [segmentI, segmentF, freqCnt] = findSPGelements (w, app.freqN, PWfrom, PWto);
+            app.spgPlot(i,j,1:app.spgl) = sum(app.spg(i,j,segmentI(1):segmentI(freqCnt),1:app.spgl));
+            if leakageFlag
+                app.spgPlotDeleaked(i,j,1:app.spgl) = sum(app.spgDeleaked(i,j,segmentI(1):segmentI(freqCnt),1:app.spgl));            
+            end 
+        end
     end    
 end
 app.spgt = t + app.timeOffset; %GAB 2019/02/24: offset added
