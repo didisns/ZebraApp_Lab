@@ -232,8 +232,8 @@ elseif flagEI
     app.upperDB.Enable = 0;
 end
 
-% set axes limits. Nah, not now!
-% axis(app.spectraWide, [app.tmin, app.tmax, app.yminTxt_spg.Value, app.ymaxTxt_spg.Value]);
+
+axis(app.wide_plot_up, [tMin, tMax, app.yminTxt_lfp.Value, app.ymaxTxt_lfp.Value]);
 
 % set axes inner position according to the axes of the LFP plot
 app.spectraWide.InnerPosition(1,3) = app.wide_plot_up.InnerPosition(1,3);

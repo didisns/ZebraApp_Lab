@@ -1,4 +1,4 @@
-function computeSpectrogram(app)
+function computeSpectrogram_noForLoops(app)
 
 % Hello, my name is me and this is March 3, 2017
 % This code computes the spectograms of all data.
@@ -8,9 +8,6 @@ function computeSpectrogram(app)
 
 % Hello, I'm Gab and this is December 16, 2020.
 % I removed the for loops from the old version of this code
-
-disp('Compute spectrograms...')
-t0 = datetime(now,'ConvertFrom','datenum');
 
 SPGfrom = app.SPGfromFreq.Value;
 SPGto = app.SPGtoFreq.Value;
@@ -111,9 +108,6 @@ end
 
 app.spgt = t + app.timeOffset; %GAB 2019/02/24: offset added
 app.spgw = w;
-
-t1 = datetime(now,'ConvertFrom','datenum');
-fprintf('Spectrograms computed in %.4f s \n',seconds(t1-t0))
 
 function [segmentI, segmentF, freqCnt] = findSPGelements (w, freqNum, lowFreq, highFreq)
 % Given a frequency range (lowFreq and highFreq) identify the elements of
