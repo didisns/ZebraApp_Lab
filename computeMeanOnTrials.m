@@ -35,8 +35,8 @@ sweepDuration = app.sp * (app.dtaLen-1);    % duration of each trial
 %             if flagDouble, handles.ntemp = 2;
 %             end
 
-halfSweep = int32 (floor(app.dtaLen/2));       % this can be easily generalize to multiple stim per sweep
-halfSweepSPG = int32(floor(app.spgl/2));
+halfSweep = int32 (app.dtaLen/2);       % this can be easily generalize to multiple stim per sweep
+halfSweepSPG = int32(app.spgl/2);
 
 % window for template computation and fit
 templFromI = int32(app.templateFrom.Value/app.sp)+1 - app.timeOffset_i; %GAB 2019/02/24: offset added
@@ -104,7 +104,6 @@ for i=1:app.nCh
             app.ntemp = 1;
             if flagDouble, app.ntemp = 2;
             end
-            
             for ii=1:app.ntemp
                 tFrom(ii) = templFromI + halfSweep * (ii-1);
                 tTo(ii) = templToI + halfSweep * (ii-1);
@@ -128,7 +127,7 @@ for i=1:app.nCh
             
             % align the template to baseline=0
             blDelta = blTo - templFromI;    % number of point in baseline
-            offset = mean(template(1:blDelta));     % OK
+            offset = median(template(1:blDelta));     % OK
             template = template - offset;
             templateConv = templateConv - offset;
             % compute the amplitude of the template.
@@ -152,7 +151,7 @@ for i=1:app.nCh
                     % first extract the LFP segment to fit with the template
                     segment(1:templateLen) = app.workLFP(i,k,tFrom(ii):tTo(ii));
                     % Offset the segment to align the baseline to 0
-                    offset = mean(segment(1:blDelta));
+                    offset = median(segment(1:blDelta));
                     segment = segment - offset;
                     %handles.segment(i,k,ii,:) = segment; %GAB&ENR 2018/10/03
                     %X = [ones(length(segment),1) segment];
@@ -197,13 +196,13 @@ for i=1:app.nCh
                     app.respSummary(app.EPcnt,3) = num2cell(k);               % 3: trial
                     app.respSummary(app.EPcnt,4) = num2cell(ii);              % 4: repeat
 
-                    app.respSummary(app.EPcnt,5) = num2cell(localEPamp);      % 5: Peak response
-                    app.respSummary(app.EPcnt,6) = num2cell(0);               % 6: time to peak
-                    app.respSummary(app.EPcnt,7) = num2cell(bl);              % 7: Baseline mean BP1 power
-                    app.respSummary(app.EPcnt,8) = num2cell(rs);              % 8: Response mean BP1 power
-                    app.respSummary(app.EPcnt,9) = num2cell(FDresp);          % 9: Delta BP1 power
-                    app.respSummary(app.EPcnt,10) = num2cell(templateSPW);    % 10: Delta BP1 power                
-                    app.respSummary(app.EPcnt,11) = cellstr(app.expID);   % 11: Patient name-notes        
+                    app.respSummary(app.EPcnt,5)  = num2cell(localEPamp);     % 5: Peak response
+                    app.respSummary(app.EPcnt,6)  = num2cell(0);              % 6: time to peak
+                    app.respSummary(app.EPcnt,7)  = num2cell(bl);             % 7: Baseline mean BP1 power
+                    app.respSummary(app.EPcnt,8)  = num2cell(rs);             % 8: Response mean BP1 power
+                    app.respSummary(app.EPcnt,9)  = num2cell(FDresp);         % 9: Delta BP1 power
+                    app.respSummary(app.EPcnt,10) = num2cell(templateSPW);   % 10: Delta BP1 power                
+                    app.respSummary(app.EPcnt,11) = cellstr(app.expID);      % 11: Patient name-notes        
                 end
             end    
             % compute metrics of the mean responses for each stim repeat
@@ -211,7 +210,7 @@ for i=1:app.nCh
                 bltemp = [];
                 rstemp = [];
                 bltemp = app.meanLFP (i,blFrom + halfSweep * (ii-1):blTo + halfSweep * (ii-1));
-                bl = mean (bltemp,2);
+                bl = median (bltemp,2);
                 % the baseline must be subtracted before computing the
                 % absolute value
                 rstemp = abs(app.meanLFP (i,respFrom + halfSweep * (ii-1):respTo + halfSweep * (ii-1)) - bl);
@@ -225,12 +224,14 @@ for i=1:app.nCh
                 % compute the response in the frequency domain    
                 bltemp = [];
                 rstemp = [];
-                bltemp = app.meanEIrat (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
-                bl = mean (bltemp,2);
+%                 bltemp = app.meanEIrat (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
+                app.BP4power
+                bltemp = app.BPpower(app.BP4power).power (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
+                bl = median (bltemp,2);
 
-                rstemp = app.meanEIrat (i,rsFromSPG + halfSweepSPG*(ii-1):rsToSPG + halfSweepSPG*(ii-1));
-                rs = mean (rstemp,2);
-                FDresp = rs-bl;
+%                 rstemp = app.meanEIrat (i,rsFromSPG + halfSweepSPG*(ii-1):rsToSPG + halfSweepSPG*(ii-1));
+%                 rs = median (rstemp,2);
+%                 FDresp = rs-bl;
 
                 app.EPcnt = app.EPcnt + 1;
                 app.respSummary(app.EPcnt,1) = cellstr(app.file_in);  % 1: file name
@@ -242,7 +243,7 @@ for i=1:app.nCh
                 app.respSummary(app.EPcnt,6) = num2cell(tpeak);           % 6: time to peak
                 app.respSummary(app.EPcnt,7) = num2cell(bl);              % 7: Baseline mean BP1 power
                 app.respSummary(app.EPcnt,8) = num2cell(rs);              % 8: Response mean BP1 power
-                app.respSummary(app.EPcnt,9) = num2cell(FDresp);          % 9: Delta BP1 power
+%                 app.respSummary(app.EPcnt,9) = num2cell(FDresp);          % 9: Delta BP1 power
 %                handles.respSummary(handles.EPcnt,10) = num2cell(TemplateSPW);    % 10: Delta BP1 power                
                 if ~isempty(app.expID)
                     app.respSummary(app.EPcnt,11) = cellstr(string(app.expID));   % 11: Patient name-notes
@@ -262,55 +263,3 @@ app.outEvochedResponses.Data = app.respSummary;
     end
 end
 
-
-function computeMeanData (app)
-    % Compute means of all the data representations on all trials
-    % April 25, 2017. A checkbox is added to skip the first trial
-    % March 2018. Modified to allow conditional computation of BPed data
-    % 2019/05/29, Gab. mean BandPassed_LFP computation moved to the function "computeBPandNotch"
-
-    leakageFlag = app.displayLeakCk.Value;
-    skipFlag = app.skip1trialCk.Value;
-    if skipFlag
-        trialBegins = 2 - app.alreadySkipped; % Gab, 2019/05/29: if the fist trial have been excluded
-                                            % during trial extraction,
-                                            % there's no reason for
-                                            % skipping another one here.
-    else
-        trialBegins = 1;
-    end
-
-    ntemp = 1; 
-    app.meanSpgDeleaked = [];
-    app.meanSpg = [];
-    for i=1:app.nCh
-        tmp = [];        % initialize tmp
-        % create temporary matrix for average computation
-        tmp (1:app.nTrials-trialBegins+1,1:app.dtaLen) = app.workLFP(i,trialBegins:app.nTrials,1:app.dtaLen);
-        app.meanLFP (i,1:app.dtaLen) = mean (tmp,1);
-        
-        % compute mean of band-passed data
-        % Gab: moved to "computeBPandNotch"
-        
-        % compute mean spectrogram
-        tmp = [];
-        if leakageFlag      %GAB: add plotting of deleaked mean spg.
-            tmp (1:app.nTrials-trialBegins+1,1:app.freqN,1:app.spgl) = app.spgDeleaked(i,trialBegins:app.nTrials,1:app.freqN,1:app.spgl);
-            app.meanSpgDeleaked (i,1:app.freqN,1:app.spgl) = mean (tmp,1);
-        end
-        tmp (1:app.nTrials-trialBegins+1,1:app.freqN,1:app.spgl) = app.spg(i,trialBegins:app.nTrials,1:app.freqN,1:app.spgl);
-        app.meanSpg (i,1:app.freqN,1:app.spgl) = mean (tmp,1);
-
-        % compute mean E/I index
-        tmp = [];
-        tmp(1:app.nTrials-trialBegins+1,1:app.spgl) = app.EIrat(i,trialBegins:app.nTrials,1:app.spgl);
-        app.meanEIrat (i,1:app.spgl) = mean (tmp,1);    
-        % compute mean 'gamma' power
-        tmp = [];
-        tmp(1:app.nTrials-trialBegins+1,1:app.spgl) = app.spgPlot(i,trialBegins:app.nTrials,1:app.spgl);
-        app.meanSpgPlot (i,1:app.spgl) = mean (tmp,1);
-
-        % the computation of the mean power spectra has been moved to the
-        % ZebraSpectre.m file    
-    end
-end
