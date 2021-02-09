@@ -14,7 +14,6 @@ addOptional(parser,'DerivativeSgolayOrder',3,@(x)(isscalar(x)))
 addOptional(parser,'FirstDerivativeThreshold',5,@(x)(isscalar(x)))
 addOptional(parser,'SecondDerivativeThreshold',0.1,@(x)(isscalar(x)))
 addOptional(parser,'OutputPlot',false,@(x)(isscalar(x) && islogical(x)))
-addOptional(parser,'InterpolationMethod','linear',@(x)(ischar(x) || isstring(x)))
 parse(parser,x,y,varargin{:})
 p = parser.Results;
 
@@ -25,7 +24,6 @@ dsgolayord = p.DerivativeSgolayOrder;
 thr1 = p.FirstDerivativeThreshold;
 thr2 = p.SecondDerivativeThreshold;
 outplot = p.OutputPlot;
-interpmethod = p.InterpolationMethod;
 clear p
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% preliminary routine

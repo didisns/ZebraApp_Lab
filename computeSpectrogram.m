@@ -17,12 +17,11 @@ if app.computeSpg_Ck.Value
     SPGto = app.SPGtoFreq.Value;
     freqStep = app.SPGresolution.Value;
     freq = SPGfrom:freqStep:SPGto;
-    app.freqN = (SPGto-SPGfrom)/freqStep + 1;
+    
     window = app.SPGwindow.Value;
-    noverlap = app.SPGoverlap.Value;
+    steptime = app.SPGstep.Value;
     leakageFlag = app.leakageCk.Value;
     app.spg=[];
-    
     
     flag = app.decimateFlag.Value;
     if flag
@@ -32,7 +31,8 @@ if app.computeSpg_Ck.Value
                 % when using a slow pc...
                 LFPsmall = decimate(app.workLFP(i,j,1:app.dtaLen),10);
                 LFPsmall(i,j,1:app.dtaLen) = decimate(app.workLFP(i,j,1:app.dtaLen),10);
-                [s, w, t, ps] = spectrogram(LFPsmall,hamming(window),noverlap, freq, app.acqF/10, 'yaxis');
+                [s, w, t, ps] = spectrogram(LFPsmall,hamming(round(window/app.sp)),round(steptime/app.sp), freq, app.acqF/10, 'yaxis');
+                app.freqN = (SPGto-SPGfrom)/freqStep + 1;
                 %t = t + app.timeOffset; %GAB 2019/02/24: offset added
             end
         end
@@ -44,8 +44,8 @@ if app.computeSpg_Ck.Value
             params.tapers = [3 5] ;%[10 0.5 1];
             params.Fs = app.acqF;
             params.fpass = [SPGfrom SPGto];
-            [rollingWin, overlap] = setSPGwindow (app, app.dtaLen*app.sp);
-            [ps, t, w] = mtspecgramc(tmp,[rollingWin overlap],params); % ps is time*freq*channel/trials
+            [rollingWin, step] = setSPGwindow (app, app.dtaLen*app.sp);
+            [ps, t, w] = mtspecgramc(tmp,[rollingWin step],params); % ps is time*freq*channel/trials
             l = size (ps);
             app.spgl = l(1);
             app.freqN = l(2);
@@ -56,7 +56,7 @@ if app.computeSpg_Ck.Value
                 % first: subtract the LP filtered data from the workLFP
                 % data. Second: compute its SPG
                 tmp = reshape( permute( app.workLFP-app.LPfiltLeakage,[3,2,1]) ,app.dtaLen,app.nCh*app.nTrials);
-                [ps, t, w] = mtspecgramc(tmp,[rollingWin overlap],params);
+                [ps, t, w] = mtspecgramc(tmp,[rollingWin step],params);
                 %             ps = ps';
                 %             app.spgDeleaked(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
                 app.spgDeleaked = permute( reshape(ps,app.spgl,app.freqN,app.nTrials,app.nCh), [4,3,2,1]);
@@ -66,15 +66,16 @@ if app.computeSpg_Ck.Value
             for i = 1:app.nCh
                 for j= 1:app.nTrials
                     tmp = app.workLFP(i,j,:);
-                    [s, w, t, ps] = spectrogram(tmp,hamming(window),noverlap, freq, app.acqF, 'yaxis');
+                    [s, w, t, ps] = spectrogram(tmp,hamming(window),round(steptime/app.sp), freq, app.acqF, 'yaxis');
                     l = size (ps);
                     app.spgl = l(2);
                     app.spg(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
                     if leakageFlag
                         tmp = squeeze(app.workLFP(i,j,:))-squeeze(app.LPfiltLeakage);
-                        [s, w, t, ps] = spectrogram(tmp,hamming(window),noverlap, freq, app.acqF, 'yaxis');
+                        [s, w, t, ps] = spectrogram(tmp,hamming(window),round(steptime/app.sp), freq, app.acqF, 'yaxis');
                         app.spgDeleaked(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
                         app.deleakedFlag = 1;
+                        app.freqN = (SPGto-SPGfrom)/freqStep + 1;
                     end
                 end
             end
@@ -189,6 +190,6 @@ if flagAuto
     end
     ovl = wnd/5;
 else
-    wnd = app.ChronuxRW.Value;
-    ovl = app.ChronuxOvl.Value;
+    wnd = app.SPGwindow.Value;
+    ovl = app.SPGstep.Value;
 end    

@@ -1,5 +1,4 @@
-% load all the matrix
-
+% load matrices first
 
 normX = 10; % avg power of a nigh seizure
 f = figure;
