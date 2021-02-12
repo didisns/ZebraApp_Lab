@@ -100,7 +100,7 @@ if app.computeSpg_Ck.Value
             % the linear regression operators '\' needs row vectors.
         end
     end
-    % compute the integral of the SPG in 'gamma' band
+    % compute the integral of the SPG
     if app.computeEnvelope.Value
         PWfrom = app.envSPGfrom.Value;
         PWto = app.envSPGto.Value;
@@ -132,6 +132,7 @@ if app.computeSpg_Ck.Value
         app.meanSpg = mean (app.spg(:,trialBegins:app.nTrials,:,:),2);
     end
     app.spg_computed = true;
+    app.leakageLPchanged = false;
     t1 = datetime(now,'ConvertFrom','datenum');
     fprintf('Spectrograms computed in %.4f s \n',seconds(t1-t0))
     
