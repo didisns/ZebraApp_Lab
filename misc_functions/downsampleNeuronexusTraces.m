@@ -1,9 +1,10 @@
-function downsampleNeuronexusTraces(selCh,fold)
+function downsampleNeuronexusTraces(selCh,newsf,fold)
 % downsamples neuronexus files and saves them as .dat files into the same
 % folder
 
 % input arguments:
 %   selCh = vector of selected channels
+%   newsf = new sampling frequency (Hz)
 %   fold = path to the source folder
 
 %% initialize reader object
@@ -23,7 +24,7 @@ clear allogofiles_logic filestruct
 
 %% set new sampling frequency
 
-newsf = 2000; %hz
+% newsf = 2000; %hz
 for i = 1:length(allegofiles)
     disp(['processing file ' num2str(i)])
     fname = [allegofiles(i).folder filesep allegofiles(i).name(1:end-10)];
