@@ -20,7 +20,6 @@ flagEI = app.EIbutton.Value;
 flagSPG = app.SPG.Value;
 flagBP = app.BP.Value;
 flagLog = app.SPGlogCk.Value;
-flagLeak = app.displayLeakCk.Value;
 
 flagSkip1st = app.skip1trialCk.Value; %gab&enrico 2018/11/02 provvisorio
 
@@ -29,17 +28,9 @@ app.spectraWide.YScale = 'linear';
 
 if flagSPG && app.spg_computed
     if flagMd
-        if (app.deleakedFlag && flagLeak)
-            temp(1:app.freqN,1:app.spgl) = app.meanSpgDeleaked(app.currentCh,1:app.freqN,1:app.spgl);
-        else
-            temp(1:app.freqN,1:app.spgl) = app.meanSpg(app.currentCh,1:app.freqN,1:app.spgl);
-        end
+        temp(1:app.freqN,1:app.spgl) = app.meanSpg(app.currentCh,1:app.freqN,1:app.spgl);
     else
-        if (app.deleakedFlag && flagLeak)
-            temp(1:app.freqN,1:app.spgl) = app.spgDeleaked(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl);
-        else
-            temp(1:app.freqN,1:app.spgl) = app.spg(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl);
-        end
+        temp(1:app.freqN,1:app.spgl) = app.spg(app.currentCh,app.currentTrial,1:app.freqN,1:app.spgl);
     end
     % the spectrogram is represented in decibels
     imagesc(app.spectraWide, app.spgt,app.spgw,10*log10(temp))
@@ -186,11 +177,8 @@ elseif flagBPpower
     if flagMd
         tmp(1:app.spgl) = app.meanSpgPlot(app.currentCh,1:app.spgl);
     else
-        if (app.deleakedFlag && flagLeak)
-            tmp(1:app.spgl) = app.spgPlotDeleaked(app.currentCh,app.currentTrial,1:app.spgl);
-        else
-            tmp(1:app.spgl) = app.spgPlot(app.currentCh,app.currentTrial,1:app.spgl);
-        end
+        
+        tmp(1:app.spgl) = app.spgPlot(app.currentCh,app.currentTrial,1:app.spgl);
         if flagFlt
             % adapt the filter frame and order to the length of the data
             frame = int32(app.spgl / 64) * 2 + 1;   % frame must be odd. Thats is why *2+1 !

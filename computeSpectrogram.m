@@ -40,7 +40,13 @@ if app.computeSpg_Ck.Value
         %     tmp = app.workLFP(i,j,1:app.dtaLen);
         flagChronux = get(app.ChronuxCk,'Value');
         if flagChronux
-            tmp = reshape( permute( app.workLFP, [3,2,1]) ,app.dtaLen,app.nCh*app.nTrials);
+            if leakageFlag
+                % first: subtract the LP filtered data from the workLFP
+                % data. Second: compute its SPG
+                tmp = reshape( permute( app.workLFP-app.LPfiltLeakage,[3,2,1]) ,app.dtaLen,app.nCh*app.nTrials);
+            else
+                tmp = reshape( permute( app.workLFP, [3,2,1]) ,app.dtaLen,app.nCh*app.nTrials);
+            end
             params.tapers = [3 5] ;%[10 0.5 1];
             params.Fs = app.acqF;
             params.fpass = [SPGfrom SPGto];
@@ -52,31 +58,20 @@ if app.computeSpg_Ck.Value
             %         ps = ps';
             %         app.spg(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
             app.spg = permute( reshape(ps,app.spgl,app.freqN,app.nTrials,app.nCh), [4,3,2,1]);
-            if leakageFlag
-                % first: subtract the LP filtered data from the workLFP
-                % data. Second: compute its SPG
-                tmp = reshape( permute( app.workLFP-app.LPfiltLeakage,[3,2,1]) ,app.dtaLen,app.nCh*app.nTrials);
-                [ps, t, w] = mtspecgramc(tmp,[rollingWin step],params);
-                %             ps = ps';
-                %             app.spgDeleaked(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
-                app.spgDeleaked = permute( reshape(ps,app.spgl,app.freqN,app.nTrials,app.nCh), [4,3,2,1]);
-                app.deleakedFlag = 1;
-            end
+
         else
             for i = 1:app.nCh
                 for j= 1:app.nTrials
-                    tmp = app.workLFP(i,j,:);
+                    if leakageFlag
+                        tmp = squeeze(app.workLFP(i,j,:))-squeeze(app.LPfiltLeakage);
+                    else
+                        tmp = app.workLFP(i,j,:);
+                    end
                     [s, w, t, ps] = spectrogram(tmp,hamming(window),round(steptime/app.sp), freq, app.acqF, 'yaxis');
                     l = size (ps);
                     app.spgl = l(2);
                     app.spg(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
-                    if leakageFlag
-                        tmp = squeeze(app.workLFP(i,j,:))-squeeze(app.LPfiltLeakage);
-                        [s, w, t, ps] = spectrogram(tmp,hamming(window),round(steptime/app.sp), freq, app.acqF, 'yaxis');
-                        app.spgDeleaked(i,j,1:app.freqN,1:app.spgl) = ps (1:app.freqN,1:app.spgl);
-                        app.deleakedFlag = 1;
-                        app.freqN = (SPGto-SPGfrom)/freqStep + 1;
-                    end
+                    app.freqN = (SPGto-SPGfrom)/freqStep + 1;
                 end
             end
         end
@@ -116,7 +111,6 @@ if app.computeSpg_Ck.Value
     
     % also compute mean spg
     if app.nTrials>1
-        leakageFlag = app.displayLeakCk.Value;
         skipFlag = app.skip1trialCk.Value;
         if skipFlag
             trialBegins = 2 - app.alreadySkipped; % Gab, 2019/05/29: if the fist trial have been excluded
@@ -125,9 +119,6 @@ if app.computeSpg_Ck.Value
             % skipping another one here.
         else
             trialBegins = 1;
-        end
-        if leakageFlag      %GAB: add plotting of deleaked mean spg.
-            app.meanSpgDeleaked = mean (app.spgDeleaked(:,trialBegins:app.nTrials,:,:),2);
         end
         app.meanSpg = mean (app.spg(:,trialBegins:app.nTrials,:,:),2);
     end
