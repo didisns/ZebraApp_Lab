@@ -16,7 +16,6 @@ function computeMeanData (app)
         trialBegins = 1;
     end
 
-    app.meanSpgDeleaked = [];
     app.meanSpg = [];
     
     % compute mean lfp
@@ -26,9 +25,6 @@ function computeMeanData (app)
     app.meanBP = squeeze(mean(app.bandPassed_LFP(:,:,trialBegins:app.nTrials,:),3));
     
     % compute mean spectrogram
-    if leakageFlag      %GAB: add plotting of deleaked mean spg.
-        app.meanSpgDeleaked = squeeze(mean(app.spgDeleaked(:,trialBegins:app.nTrials,:,:),2));
-    end
     app.meanSpg = squeeze(mean(app.spg(:,trialBegins:app.nTrials,:,:),2));
     
     % compute mean E/I index

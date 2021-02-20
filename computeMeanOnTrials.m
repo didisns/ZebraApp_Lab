@@ -225,7 +225,6 @@ for i=1:app.nCh
                 bltemp = [];
                 rstemp = [];
 %                 bltemp = app.meanEIrat (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
-                app.BP4power
                 bltemp = app.BPpower(app.BP4power).power (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
                 bl = median (bltemp,2);
 
