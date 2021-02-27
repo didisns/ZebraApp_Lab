@@ -22,10 +22,13 @@ function computeMeanData (app)
     app.meanLFP = squeeze(mean(app.workLFP(:,trialBegins:app.nTrials,:),2));
     
     % compute mean band-passed lfp
-    app.meanBP = squeeze(mean(app.bandPassed_LFP(:,:,trialBegins:app.nTrials,:),3));
+%     app.meanBP = [];
+%     app.meanBP(1:app.NumberofBPsEditField.Value,1:app.nCh,1:app.dtaLen) = squeeze(mean(app.bandPassed_LFP(:,:,trialBegins:app.nTrials,:),3));
     
     % compute mean spectrogram
-    app.meanSpg = squeeze(mean(app.spg(:,trialBegins:app.nTrials,:,:),2));
+    if app.spg_computed
+        app.meanSpg = squeeze(mean(app.spg(:,trialBegins:app.nTrials,:,:),2));
+    end
     
     % compute mean E/I index
     if app.computeEIrat.Value

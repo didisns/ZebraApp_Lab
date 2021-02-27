@@ -64,19 +64,21 @@ respTo = int32(app.respTo.Value/app.sp)+1 - app.timeOffset_i; %GAB 2019/02/24: o
 
 % processing of spectrograms
 % compute the deltaT of the spectrogram
-dlt = (app.spgt(end)-app.spgt(1))/(size(app.spgt,2));
-blFromSPG = int32((app.baselineFrom.Value-app.spgt(1))/dlt) + 1;
-if (blFromSPG<1), blFromSPG=1;
+if app.spg_computed
+    dlt = (app.spgt(end)-app.spgt(1))/(size(app.spgt,2));
+    blFromSPG = int32((app.baselineFrom.Value-app.spgt(1))/dlt) + 1;
+    if (blFromSPG<1), blFromSPG=1;
+    end
+    blToSPG = int32((app.baselineTo.Value-app.spgt(1))/dlt) + 1;
+    if (blToSPG<1), blToSPG=1;
+    end
+    rsFromSPG= int32((app.respFrom.Value-app.spgt(1))/dlt) + 1;
+    if (rsFromSPG<1), rsFromSPG=1;
+    end
+    rsToSPG = int32((app.respTo.Value-app.spgt(1))/dlt) + 1;
+    bltemp = [];
+    rstemp = [];
 end
-blToSPG = int32((app.baselineTo.Value-app.spgt(1))/dlt) + 1;
-if (blToSPG<1), blToSPG=1;
-end
-rsFromSPG= int32((app.respFrom.Value-app.spgt(1))/dlt) + 1;
-if (rsFromSPG<1), rsFromSPG=1;
-end
-rsToSPG = int32((app.respTo.Value-app.spgt(1))/dlt) + 1;
-bltemp = [];
-rstemp = [];
 
 if get(app.autoclear,'Value')
     app.respSummary = {};
@@ -225,8 +227,8 @@ for i=1:app.nCh
                 bltemp = [];
                 rstemp = [];
 %                 bltemp = app.meanEIrat (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
-                bltemp = app.BPpower(app.BP4power).power (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
-                bl = median (bltemp,2);
+%                 bltemp = app.BPpower(app.BP4power).power (i,blFromSPG + halfSweepSPG*(ii-1):blToSPG + halfSweepSPG*(ii-1));
+%                 bl = median (bltemp,2);
 
 %                 rstemp = app.meanEIrat (i,rsFromSPG + halfSweepSPG*(ii-1):rsToSPG + halfSweepSPG*(ii-1));
 %                 rs = median (rstemp,2);
