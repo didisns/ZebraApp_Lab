@@ -217,7 +217,7 @@ for i=1:app.nCh
                 % absolute value
                 rstemp = abs(app.meanLFP (i,respFrom + halfSweep * (ii-1):respTo + halfSweep * (ii-1)) - bl);
                 % a bit of filtering before computation of the max
-                rstemp = sgolayfilt(rstemp,3,floor(wSgolay/2)+1); %previously framelength
+                rstemp = sgolayfilt(rstemp,3,2*floor(wSgolay/4)+1); %previously framelength
                 [resp, imax] = max (rstemp,[],2);
                 tpeak = app.sp*double(respFrom+imax) + app.timeOffset;
                 resp = resp * sign(app.meanLFP (i,respFrom+imax) - bl);
