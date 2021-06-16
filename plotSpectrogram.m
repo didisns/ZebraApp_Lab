@@ -52,6 +52,7 @@ if flagSPG && app.spg_computed
     app.spectraWide.YLabel.String = 'Frequency (Hz)';
     app.lowerDB.Enable = 1;
     app.upperDB.Enable = 1;
+    app.spectraWide.Colormap = turbo;
     
 elseif flagBP
     hold(app.spectraWide, 'on');
